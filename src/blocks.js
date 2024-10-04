@@ -3,59 +3,6 @@ import translations from './l10n.yaml';
 import iconURI from './icon.svg';
 import penPyURI from './pen.py';
 
-function provideRendererFunctionJs() {
-  return this.provideFunction_('pen_renderer', [
-    `const ${this.FUNCTION_NAME_PLACEHOLDER_} = (item) => {`,
-    `  let renderer = stage.layer.children['pen_renderer'];`,
-    '  if (!renderer) {',
-    '    renderer = new runtime.core.Group();',
-    `    renderer.name = 'pen_renderer';`,
-    '    stage.layer.addChild(renderer)',
-    '  }',
-    '  if (item) {',
-    '    item.visible = true;',
-    '    renderer.addChild(item);',
-    '  }',
-    '  return renderer;',
-    '};',
-  ]);
-}
-
-function provideDrawFunctionJs() {
-  return this.provideFunction_('pen_draw', [
-    `const ${this.FUNCTION_NAME_PLACEHOLDER_} = (target) => {`,
-    '  if (target.data.pen_update) return;',
-    '  const item = new runtime.core.Group();',
-    '  item.data = {',
-    '    x: target.position.x,',
-    '    y: target.position.y,',
-    '  };',
-    '  target.data.pen_update = () => {',
-    '    const { x, y } = target.position;',
-    '    if (item.data.x !== x || item.data.y !== y) {',
-    '      item.addChild(new runtime.core.Path.Line({',
-    '        from: [item.data.x, item.data.y],',
-    '        to: [x, y],',
-    `        strokeColor: target.data.pen_color || '#000000',`,
-    '        strokeWidth: target.data.pen_size || 1,',
-    `        strokeCap: 'round',`,
-    `        strokeJoin: 'round',`,
-    '      }));',
-    '      item.data = { x, y };',
-    '    }',
-    '  };',
-    `  target.util.on('update', target.data.pen_update)`,
-    `  runtime.once('stop', () => {`,
-    '    if (target.data.pen_update) {',
-    `      target.util.off('update', target.data.pen_update);`,
-    '      target.data.pen_update = null;',
-    '    }',
-    '  });',
-    '  return item;',
-    '};',
-  ]);
-}
-
 export default {
   iconURI,
   name: (
@@ -231,31 +178,7 @@ export default {
       useStage: false,
       inputs: {
         OPTION: {
-          type: 'string',
-          default: 'color',
-          menu: [
-            [
-              <Text
-                id="extension.pen.color"
-                defaultMessage="color"
-              />,
-              'hue',
-            ],
-            [
-              <Text
-                id="extension.pen.saturation"
-                defaultMessage="saturation"
-              />,
-              'saturation',
-            ],
-            [
-              <Text
-                id="extension.pen.brightness"
-                defaultMessage="brightness"
-              />,
-              'brightness',
-            ],
-          ],
+          menu: 'colorParam',
         },
         VALUE: {
           type: 'number',
@@ -301,31 +224,7 @@ export default {
       useStage: false,
       inputs: {
         OPTION: {
-          type: 'string',
-          default: 'color',
-          menu: [
-            [
-              <Text
-                id="extension.pen.color"
-                defaultMessage="color"
-              />,
-              'hue',
-            ],
-            [
-              <Text
-                id="extension.pen.saturation"
-                defaultMessage="saturation"
-              />,
-              'saturation',
-            ],
-            [
-              <Text
-                id="extension.pen.brightness"
-                defaultMessage="brightness"
-              />,
-              'brightness',
-            ],
-          ],
+          menu: 'colorParam',
         },
         VALUE: {
           type: 'number',
@@ -431,5 +330,88 @@ export default {
       },
     },
   ],
+  menus: {
+    colorParam: {
+      inputMode: true,
+      type: 'string',
+      default: 'hue',
+      items: [
+        [
+          <Text
+            id="extension.pen.color"
+            defaultMessage="color"
+          />,
+          'hue',
+        ],
+        [
+          <Text
+            id="extension.pen.saturation"
+            defaultMessage="saturation"
+          />,
+          'saturation',
+        ],
+        [
+          <Text
+            id="extension.pen.brightness"
+            defaultMessage="brightness"
+          />,
+          'brightness',
+        ],
+      ],
+    },
+  },
   translations,
 };
+
+function provideRendererFunctionJs() {
+  return this.provideFunction_('pen_renderer', [
+    `const ${this.FUNCTION_NAME_PLACEHOLDER_} = (item) => {`,
+    `  let renderer = stage.layer.children['pen_renderer'];`,
+    '  if (!renderer) {',
+    '    renderer = new runtime.core.Group();',
+    `    renderer.name = 'pen_renderer';`,
+    '    stage.layer.addChild(renderer)',
+    '  }',
+    '  if (item) {',
+    '    item.visible = true;',
+    '    renderer.addChild(item);',
+    '  }',
+    '  return renderer;',
+    '};',
+  ]);
+}
+
+function provideDrawFunctionJs() {
+  return this.provideFunction_('pen_draw', [
+    `const ${this.FUNCTION_NAME_PLACEHOLDER_} = (target) => {`,
+    '  if (target.data.pen_update) return;',
+    '  const item = new runtime.core.Group();',
+    '  item.data = {',
+    '    x: target.position.x,',
+    '    y: target.position.y,',
+    '  };',
+    '  target.data.pen_update = () => {',
+    '    const { x, y } = target.position;',
+    '    if (item.data.x !== x || item.data.y !== y) {',
+    '      item.addChild(new runtime.core.Path.Line({',
+    '        from: [item.data.x, item.data.y],',
+    '        to: [x, y],',
+    `        strokeColor: target.data.pen_color || '#000000',`,
+    '        strokeWidth: target.data.pen_size || 1,',
+    `        strokeCap: 'round',`,
+    `        strokeJoin: 'round',`,
+    '      }));',
+    '      item.data = { x, y };',
+    '    }',
+    '  };',
+    `  target.util.on('update', target.data.pen_update)`,
+    `  runtime.once('stop', () => {`,
+    '    if (target.data.pen_update) {',
+    `      target.util.off('update', target.data.pen_update);`,
+    '      target.data.pen_update = null;',
+    '    }',
+    '  });',
+    '  return item;',
+    '};',
+  ]);
+}
