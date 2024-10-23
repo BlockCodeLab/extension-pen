@@ -191,7 +191,7 @@ export default {
         if (this.STATEMENT_PREFIX) {
           code += this.injectId(this.STATEMENT_PREFIX, block);
         }
-        const option = block.getFieldValue('OPTION');
+        const option = this.valueToCode(block, 'OPTION', this.ORDER_NONE) || 'hue';
         const value = this.valueToCode(block, 'VALUE', this.ORDER_NONE) || 0;
         code += `pen.change_color(target, ${option} = num(${value}))\n`;
         return code;
@@ -201,7 +201,7 @@ export default {
         if (this.STATEMENT_PREFIX) {
           code += this.injectId(this.STATEMENT_PREFIX, block);
         }
-        const option = block.getFieldValue('OPTION');
+        const option = this.valueToCode(block, 'OPTION', this.ORDER_NONE) || 'hue';
         const value = this.valueToCode(block, 'VALUE', this.ORDER_NONE) || 0;
         code += `target.data.pen_color = new runtime.core.Color(target.data.pen_color).convert('hsb');\n`;
         if (option === 'hue') {
@@ -237,7 +237,7 @@ export default {
         if (this.STATEMENT_PREFIX) {
           code += this.injectId(this.STATEMENT_PREFIX, block);
         }
-        const option = block.getFieldValue('OPTION');
+        const option = this.valueToCode(block, 'OPTION', this.ORDER_NONE) || 'hue';
         const value = this.valueToCode(block, 'VALUE', this.ORDER_NONE) || 0;
         code += `pen.set_color(${option} = num(${value}))\n`;
         return code;
@@ -247,7 +247,7 @@ export default {
         if (this.STATEMENT_PREFIX) {
           code += this.injectId(this.STATEMENT_PREFIX, block);
         }
-        const option = block.getFieldValue('OPTION');
+        const option = this.valueToCode(block, 'OPTION', this.ORDER_NONE) || 'hue';
         const value = this.valueToCode(block, 'VALUE', this.ORDER_NONE) || 0;
         code += 'target.data.pen_color = new runtime.core.Color(target.data.pen_color);\n';
         if (option === 'hue') {
