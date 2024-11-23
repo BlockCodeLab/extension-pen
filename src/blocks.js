@@ -41,8 +41,8 @@ export default {
         if (this.STATEMENT_PREFIX) {
           code += this.injectId(this.STATEMENT_PREFIX, block);
         }
-        const renderer = provideRendererFunctionJs.call(this);
-        code += `${renderer}().children.forEach((group) => group.removeChildren());\n`;
+        code += `stage.layer.children['pen_renderer']?`;
+        code += `.children.forEach((group) => group.removeChildren());\n`;
         return code;
       },
     },
@@ -372,11 +372,9 @@ function provideRendererFunctionJs() {
     `    renderer.name = 'pen_renderer';`,
     '    stage.layer.addChild(renderer)',
     '  }',
-    '  if (item) {',
-    '    item.visible = true;',
-    '    renderer.addChild(item);',
-    '  }',
-    '  return renderer;',
+    '  if (!item) return;',
+    '  item.visible = true;',
+    '  renderer.addChild(item);',
     '};',
   ]);
 }
